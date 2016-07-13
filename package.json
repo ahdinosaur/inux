@@ -1,0 +1,30 @@
+{
+  "name": "inu-action",
+  "version": "0.0.0",
+  "description": "action helpers for &#x60;inu&#x60;",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test.js",
+    "start": "node-dev example"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahdinosaur/inu-actions.git"
+  },
+  "keywords": [],
+  "author": "Mikey <michael.williams@enspiral.com> (http://dinosaur.is)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ahdinosaur/inu-actions/issues"
+  },
+  "homepage": "https://github.com/ahdinosaur/inu-actions#readme",
+  "devDependencies": {
+    "node-dev": "^3.1.0",
+    "npm-run-all": "^1.6.0",
+    "tape": "^4.5.1"
+  },
+  "dependencies": {
+    "pull-many": "^1.0.6",
+    "xtend": "^4.0.1"
+  }
+}
