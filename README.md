@@ -1,12 +1,10 @@
 # inux
 
-experimental helpers for `inu` similar to [`redux` patterns](http://redux.js.org/).
+experimental helpers for `inu` similar to [common `redux` patterns](http://redux.js.org/).
 
 ```shell
 npm install --save inux
 ```
-
-pronounced: `inu` - *X*
 
 ## usage
 
@@ -20,9 +18,13 @@ pronounced: `inu` - *X*
 
 ### `inux.combineUpdates(Object updates)`
 
-### `inux.scopeUpdate(Function update, String key)`
+### `inux.combineRuns(Object runs)`
 
 ### `inux.handleActions(Object actionHandlers)
+
+### `inux.handleEffects(Object effectHandlers)
+
+### `inux.scopeUpdate(Function update, String key)`
 
 ### `inux.reduceUpdates(Array updates)
 

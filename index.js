@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const mapValues = require('@f/map-values')
 const mapObj = require('@f/map-obj')
+const keys = require('own-enumerable-keys')
 const pullMany = require('pull-many')
 const empty = require('pull-stream/sources/empty')
 const multi = require('inu-multi')
@@ -10,8 +11,9 @@ module.exports = {
   combineApps,
   combineInits,
   combineUpdates,
-  scopeUpdate,
   handleActions,
+  handleEffects,
+  scopeUpdate,
   reduceUpdates,
   runMany
 }
@@ -27,7 +29,7 @@ function combineApps (apps) {
   return multi({
     init: combineInits(mapObj(app => app.init, apps)),
     update: combineUpdates(mapObj(app => app.update, apps)),
-    run: runMany(mapValues(app => app.run, apps))
+    run: combineRuns(mapObj(app => app.run, apps))
     // TODO combine routes?
   })
 }
@@ -35,19 +37,70 @@ function combineApps (apps) {
 function combineInits (inits) {
   return function combinedInit () {
     var effect = []
+
     const model = mapObj(init => {
       const state = init()
       if (state.effect) effect.push(state.effect)
       return state.model
     }, inits)
+
     return { model, effect }
   }
 }
 
 function combineUpdates (updates) {
-  return reduceUpdates(
-    mapValues(scopeUpdate, updates)
-  )
+  const handled = mapValues((update, key) => {
+    if (!update) return (model) => ({ model })
+    if (typeof update === 'object') {
+      return handleActions(update)
+    }
+    return update
+  }, updates)
+  
+  const scoped = mapValues(scopeUpdate, handled)
+
+  return reduceUpdates(scoped)
+}
+
+function combineRuns (runs) {
+  const handled = mapValues((run, key) => {
+    if (!run) return empty()
+    if (typeof run === 'object') {
+      return handleEffects(run)
+    }
+    return run
+  }, runs)
+
+  return runMany(handled)
+}
+
+function handleActions (actionHandlers) {
+  const updates = 
+  keys(actionHandlers).map((actionType) => {
+    const update = actionHandlers[actionType]
+
+    return function (model, action) {
+      if (action.type === actionType) {
+        return update(model, action.payload)
+      }
+      return { model }
+    }
+  })
+
+  return reduceUpdates(updates)
+}
+
+function handleEffects (effectHandlers) {
+  return function (effect, sources) {
+    const nextActionsSources =
+    keys(effectHandlers).map((effectType) => {
+      if (effect.type !== effectType) return empty()
+      const run = effectHandlers[effectType]
+      return run(effect, sources)
+    })
+
+    return runMany(nextActionsSources)
+  }
 }
 
 function scopeUpdate (update, key) {
@@ -56,6 +109,7 @@ function scopeUpdate (update, key) {
     const nextModel = extend(model, {
       [key]: scopeState.model
     })
+
     return {
       model: nextModel,
       effect: scopeState.effect
@@ -63,24 +117,10 @@ function scopeUpdate (update, key) {
   }
 }
 
-
-function handleActions (actionHandlers) {
-  return reduceUpdates(
-    keys(actionHandlers).map((actionType) => {
-      const update = actionHandlers[actionType]
-
-      return function (model, action) {
-        if (action.type === actionType) {
-          return update(model, action.payload)
-        }
-        return { model }
-      }
-    })
-  )
-}
-
 function reduceUpdates (updates) {
+  console.log('updates', updates)
   return function reducedUpdate (model, action) {
+    console.log('model', model, action)
     return updates.reduce(
       (state, update) => {
         const nextState = update(state.model, action)
@@ -114,7 +154,7 @@ function identity (id) { return id }
 
 /*
 function mapValues (object, lambda) {
-  return Object.keys(object).reduce(sofar, key => {
+  return keys(object).reduce(sofar, key => {
     return assign(sofar, {
       [key]: lambda(object[key], key, object)
     })

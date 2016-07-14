@@ -24,6 +24,7 @@
     "@f/map-obj": "^1.2.2",
     "@f/map-values": "^1.0.0",
     "inu-multi": "^1.0.0",
+    "own-enumerable-keys": "^1.0.0",
     "pull-many": "^1.0.6",
     "pull-stream": "^3.4.3",
     "xtend": "^4.0.1"
