@@ -1,20 +1,32 @@
-# inu-action
+# inux
 
-action helpers for &#x60;inu&#x60;
+experimental helpers for `inu` similar to [`redux` patterns](http://redux.js.org/).
 
 ```shell
-npm install --save inu-action
+npm install --save inux
 ```
+
+pronounced: `inu` - *X*
 
 ## usage
 
-### `ia = require('inu-action')`
+### `inux = require('inux')`
 
-### `ia.handleActions(actionHandlers)
+### `inux.createAction(String type, Function payloadCreator)`
 
-### `ia.reduceUpdates(updates)
+### `inux.combineApps(Object apps)`
 
-### `ia.runMany(runs)
+### `inux.combineInits(Object inits)`
+
+### `inux.combineUpdates(Object updates)`
+
+### `inux.scopeUpdate(Function update, String key)`
+
+### `inux.handleActions(Object actionHandlers)
+
+### `inux.reduceUpdates(Array updates)
+
+### `inux.runMany(Array runs)
 
 ## license
 

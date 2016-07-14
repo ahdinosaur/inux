@@ -1,8 +1,8 @@
 const test = require('tape')
 
-const inuActions = require('../')
+const inux = require('../')
 
-describe('inu-actions', function(t) {
-  t.ok(inuActions, 'module is require-able')
+describe('inux', function(t) {
+  t.ok(inux, 'module is require-able')
   t.end()
 })

@@ -1,3 +1,3 @@
-const inuActions = require('./')
+const inux = require('./')
 
-console.log('inu-actions', inuActions)
+console.log('inux', inux)
