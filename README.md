@@ -10,7 +10,7 @@ npm install --save inux
 
 ### `inux = require('inux')`
 
-### `inux.createAction(String type, Function payloadCreator)`
+### `inux.create(String type, Function payloadCreator)`
 
 ### `inux.combineApps(Object apps)`
 

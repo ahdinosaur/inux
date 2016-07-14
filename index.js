@@ -7,7 +7,7 @@ const empty = require('pull-stream/sources/empty')
 const multi = require('inu-multi')
 
 module.exports = {
-  createAction,
+  create,
   combineApps,
   combineInits,
   combineUpdates,
@@ -18,7 +18,7 @@ module.exports = {
   runMany
 }
 
-function createAction (type, payloadCreator = identity) {
+function create (type, payloadCreator = identity) {
   return (...args) => ({
     type,
     payload: payloadCreator(...args)
@@ -49,21 +49,21 @@ function combineInits (inits) {
 }
 
 function combineUpdates (updates) {
-  const handled = mapValues((update, key) => {
+  const handled = mapObj((update) => {
     if (!update) return (model) => ({ model })
     if (typeof update === 'object') {
       return handleActions(update)
     }
     return update
   }, updates)
-  
-  const scoped = mapValues(scopeUpdate, handled)
 
-  return reduceUpdates(scoped)
+  const scoped = mapObj(scopeUpdate, handled)
+
+  return reduceUpdates(mapValues(identity, handled))
 }
 
 function combineRuns (runs) {
-  const handled = mapValues((run, key) => {
+  const handled = mapValues((run) => {
     if (!run) return empty()
     if (typeof run === 'object') {
       return handleEffects(run)
@@ -91,16 +91,18 @@ function handleActions (actionHandlers) {
 }
 
 function handleEffects (effectHandlers) {
-  return function (effect, sources) {
-    const nextActionsSources =
-    keys(effectHandlers).map((effectType) => {
-      if (effect.type !== effectType) return empty()
-      const run = effectHandlers[effectType]
-      return run(effect, sources)
-    })
+  const runs = 
+  keys(effectHandlers).map((effectType) => {
+    const run = effectHandlers[effectType]
 
-    return runMany(nextActionsSources)
-  }
+    return function (effect, sources) {
+      if (effect.type === effectType) {
+        return run(effect, sources)
+      }
+    }
+  })
+
+  return runMany(runs)
 }
 
 function scopeUpdate (update, key) {
@@ -118,10 +120,8 @@ function scopeUpdate (update, key) {
 }
 
 function reduceUpdates (updates) {
-  console.log('updates', updates)
   return function reducedUpdate (model, action) {
-    console.log('model', model, action)
-    return updates.reduce(
+    const nextState = updates.reduce(
       (state, update) => {
         const nextState = update(state.model, action)
         const nextModel = nextState.model
@@ -136,6 +136,11 @@ function reduceUpdates (updates) {
       },
       { model, effect: [] }
     )
+
+    nextState.effect = nextState.effect.length !== 0
+      ? nextState.effect : null
+    
+    return nextState
   }
 }
 
@@ -159,5 +164,4 @@ function mapValues (object, lambda) {
       [key]: lambda(object[key], key, object)
     })
   }, {})
-}
 */
