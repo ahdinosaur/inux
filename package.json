@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ahdinosaur/inu-actions.git"
+    "url": "git+https://github.com/ahdinosaur/inux.git"
   },
   "keywords": [],
   "author": "Mikey <michael.williams@enspiral.com> (http://dinosaur.is)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/ahdinosaur/inu-actions/issues"
+    "url": "https://github.com/ahdinosaur/inux/issues"
   },
-  "homepage": "https://github.com/ahdinosaur/inu-actions#readme",
+  "homepage": "https://github.com/ahdinosaur/inux#readme",
   "devDependencies": {
     "tape": "^4.5.1"
   },
