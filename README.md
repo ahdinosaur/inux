@@ -8,7 +8,7 @@ npm install --save inux
 
 ## example
 
-```
+```js
 const { start, html } = require('inu')
 const { combineApps, handleActions } = require('inux')
 const extend = require('xtend')
