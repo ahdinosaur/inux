@@ -59,7 +59,7 @@ function combineUpdates (updates) {
 
   const scoped = mapObj(scopeUpdate, handled)
 
-  return reduceUpdates(mapValues(identity, handled))
+  return reduceUpdates(values(scoped))
 }
 
 function combineRuns (runs) {
@@ -97,7 +97,7 @@ function handleEffects (effectHandlers) {
 
     return function (effect, sources) {
       if (effect.type === effectType) {
-        return run(effect, sources)
+        return run(effect.payload, sources)
       }
     }
   })
@@ -125,7 +125,7 @@ function reduceUpdates (updates) {
       (state, update) => {
         const nextState = update(state.model, action)
         const nextModel = nextState.model
-        const nextEffect = nextState.effect
+        const nextEffect = nextState.effect != null
           ? state.effect.concat(nextState.effect)
           : state.effect
 
@@ -156,12 +156,4 @@ function runMany (runs) {
 }
 
 function identity (id) { return id }
-
-/*
-function mapValues (object, lambda) {
-  return keys(object).reduce(sofar, key => {
-    return assign(sofar, {
-      [key]: lambda(object[key], key, object)
-    })
-  }, {})
-*/
+function values (obj) { return mapValues(identity, obj) }
