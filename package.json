@@ -1,6 +1,6 @@
 {
   "name": "inux",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "experimental flavor of inu helpers based on redux",
   "main": "index.js",
   "scripts": {
