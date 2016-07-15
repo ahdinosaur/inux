@@ -49,29 +49,13 @@ function combineInits (inits) {
 }
 
 function combineUpdates (updates) {
-  const handled = mapObj((update) => {
-    if (!update) return (model) => ({ model })
-    if (typeof update === 'object') {
-      return handleActions(update)
-    }
-    return update
-  }, updates)
-
-  const scoped = mapObj(scopeUpdate, handled)
+  const scoped = mapObj(scopeUpdate, updates)
 
   return reduceUpdates(values(scoped))
 }
 
 function combineRuns (runs) {
-  const handled = mapValues((run) => {
-    if (!run) return empty()
-    if (typeof run === 'object') {
-      return handleEffects(run)
-    }
-    return run
-  }, runs)
-
-  return runMany(handled)
+  return runMany(values(runs))
 }
 
 function handleActions (actionHandlers) {
