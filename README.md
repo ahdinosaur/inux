@@ -10,7 +10,7 @@ npm install --save inux
 
 ```js
 const { start, html } = require('inu')
-const { combineApps, handleActions } = require('inux')
+const { combineApps, handleActions, create } = require('inux')
 const extend = require('xtend')
 
 const INCREMENT = Symbol('increment')
