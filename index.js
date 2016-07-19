@@ -11,8 +11,8 @@ module.exports = {
     run: require('./run').app,
     href: require('./href')
   },
-  addRouter: require('./addRouter'),
-  createRouter: require('./createRouter'),
+  Router: require('./router'),
+  route: require('./route'),
   handleActions: require('./handleActions'),
   handleEffects: require('./handleEffects'),
   scopeUpdate: require('./scopeUpdate'),

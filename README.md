@@ -79,7 +79,7 @@ also
 
 - adds `inux.apps.href` to handle `href` changes
 - adds `inux.apps.run` to handle `run` actions
-- sets view using `addRouter`
+- sets view using `route`
 
 ### `inux.Action(String|Symbol type, Function payloadCreator)`
 ### `inux.Effect(String|Symbol type, Function payloadCreator)`
@@ -122,15 +122,15 @@ app to track `window.location.href`.
 
 combines an array of apps into a single app.
 
-### `inux.addRouter(Object app, Function viewCreator)`
+### `inux.route(Object app, Function viewCreator)`
 
 given an app with `app.routes`
 
 and a function of the form `(routes) => (model, dispatch) => ...`,
 
-creates the router with `createRouter(app.routes)` and sets the corresponding view as `app.view`.
+creates the router with `Router(app.routes)` and sets the corresponding view as `app.view`.
 
-### `inux.createRouter(Array routes)`
+### `inux.Router(Array routes)`
 
 given an array of routes, return a router using `sheet-router`.
 
