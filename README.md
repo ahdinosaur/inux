@@ -1,6 +1,6 @@
 # inux
 
-experimental helpers for `inu` similar to [common `redux` patterns](http://redux.js.org/).
+experimental helpers for `inu`
 
 ```shell
 npm install --save inux
@@ -10,52 +10,52 @@ npm install --save inux
 
 ```js
 const { start, html } = require('inu')
-const { combineApps, handleActions, create } = require('inux')
+const { App, Domain, Action } = require('inux')
 const extend = require('xtend')
 
 const INCREMENT = Symbol('increment')
 const DECREMENT = Symbol('decrement')
 const SET = Symbol('set')
 
-const increment = create(INCREMENT)
-const decrement = create(DECREMENT)
-const set = create(SET)
+const increment = Action(INCREMENT)
+const decrement = Action(DECREMENT)
+const set = Action(SET)
 
-const counter = {
+const view = (model, dispatch) => html`
+  <div>
+    <button onclick=${(e) =>
+      dispatch(decrement())
+    }> - </button>
+    <input type='number'
+      oninput=${(ev) => {
+        dispatch(set(Number(ev.target.value)))
+      }}
+      value=${model}
+    />
+    <button onclick=${(e) =>
+      dispatch(increment())
+    }> + </button>
+  </div>
+`
+
+const counter = Domain({
+  name: 'counter',
   init: () => ({ model: 0 }),
-  update: handleActions({
+  update: {
     [INCREMENT]: (model) => ({ model: model + 1 }),
     [DECREMENT]: (model) => ({ model: model - 1 }),
     [SET]: (model, value) => ({ model: value })
-  }),
-  view: (model, dispatch) => html`
-    <div>
-      <button onclick=${(e) =>
-        dispatch(decrement())
-      }> - </button>
-      <input type='number'
-        oninput=${(ev) => {
-          dispatch(set(Number(ev.target.value)))
-        }}
-        value=${model}
-      />
-      <button onclick=${(e) =>
-        dispatch(increment())
-      }> + </button>
-    </div>
-  `
-}
+  },
+  routes: [
+    ['/', (params, model, dispatch) => {
+      return view(model.counter, dispatch)
+    }]
+  ]
+})
 
-const app = extend(
-  combineApps({
-    counter: counter
-  }),
-  {
-    view: (model, dispatch) => {
-      return counter.view(model.counter, dispatch)
-    }
-  }
-}
+const app = App([
+  counter
+])
 
 // const sources = start(app) ...
 ```
@@ -64,7 +64,26 @@ const app = extend(
 
 ### `inux = require('inux')`
 
-### `inux.create(String|Symbol type, Function payloadCreator)`
+### `inux.Domain(Object app)`
+
+extends `app.update` and `app.run` with `handleActions` and `handleEffects`, respectively.
+
+### `inux.App(Array apps)`
+
+combines an `Array` of `inux` apps into a single `inu` app.
+
+each app's model is namespaced to `app.name`, 
+any app's effect is added to an `Array` of effects.
+
+also
+
+- adds `inux.apps.href` to handle `href` changes
+- adds `inux.apps.run` to handle `run` actions
+- sets view using `addRouter`
+
+### `inux.Action(String|Symbol type, Function payloadCreator)`
+### `inux.Effect(String|Symbol type, Function payloadCreator)`
+### `inux.Event(String|Symbol type, Function payloadCreator)`
 
 create an action or effect creator.
 
@@ -77,13 +96,45 @@ creator returns object of form
 }
 ```
 
-### `inux.combineApps(Object apps)`
+### `inux.run(effect)`
 
-combines an `Object` of `inu` apps into a single app, similar to [`redux.combineReducers`](http://redux.js.org/docs/api/combineReducers.html).
+creates action objects to run an effect.
 
-each app's model is namespaced to the respective key in `apps`,
+corresponding `inux.apps.run` update:
 
-any app's effect is added to an `Array` of effects. because of this, `combineApps` also adds [`inu-multi`](https://github.com/ahdinosaur/inu-multi/blob/master/index.js) to the resulting app.
+```
+{
+  [RUN]: (model, effect) => ({ model, effect })
+}
+```
+
+---
+
+### `inux.apps.run`
+
+app to handle `run` actions.
+
+### `inux.apps.href`
+
+app to track `window.location.href`.
+
+### `inux.combine(Array apps)`
+
+combines an array of apps into a single app.
+
+### `inux.addRouter(Object app, Function viewCreator)`
+
+given an app with `app.routes`
+
+and a function of the form `(routes) => (model, dispatch) => ...`,
+
+creates the router with `createRouter(app.routes)` and sets the corresponding view as `app.view`.
+
+### `inux.createRouter(Array routes)`
+
+given an array of routes, return a router using `sheet-router`.
+
+the last route will be used as the default route.
 
 ### `inux.handleActions(Object actionHandlers)`
 
@@ -101,19 +152,23 @@ each `String` or `Symbol` key corresponds to an `effect.type`.
 
 each effect handler is a `Function` of the form `(effect.payload, sources) => nextActions or null`.
 
----
-
-### `inux.combineInits(Object inits)`
-
-### `inux.combineUpdates(Object updates)`
-
-### `inux.combineRuns(Object runs)`
-
 ### `inux.scopeUpdate(Function update, String key)`
+
+given an update function and a key, returns a new update function that namespaces updates at the key.
 
 ### `inux.reduceUpdates(Array updates)`
 
+given a list of update functions, return a new update function that is the result of applying all of them.
+
 ### `inux.runMany(Array runs)`
+
+given a list of run functions, return a new run function that is the result of applying all of them.
+
+## inspiration
+
+- [`redux.combineReducers`](http://redux.js.org/docs/api/combineReducers.html)
+- [`redux-actions`](https://github.com/acdlite/redux-actions)
+- [`choo`](https://github.com/yoshuawuyts/choo)
 
 ## license
 
