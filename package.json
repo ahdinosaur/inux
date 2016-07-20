@@ -23,7 +23,7 @@
   "dependencies": {
     "get-in": "^2.0.0",
     "inu": "github:ahdinosaur/inu#defaults",
-    "inu-multi": "^1.0.0",
+    "inu-multi": "^1.0.2",
     "own-enumerable-keys": "^1.0.0",
     "pull-many": "^1.0.6",
     "pull-pushable": "^2.0.1",
