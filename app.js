@@ -1,6 +1,6 @@
 const href = require('./href')
 const run = require('./run').app
-const addRouter = require('./addRouter')
+const route = require('./route')
 const combine = require('./combine')
 
 module.exports = App
@@ -14,7 +14,7 @@ function App (apps) {
   // handle href state
   apps.push(href)
 
-  return addRouter(combine(apps), (router) => {
+  return route(combine(apps), (router) => {
     return (model, dispatch) => {
       return router(model.href, model, dispatch)
     }
