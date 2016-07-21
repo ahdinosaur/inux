@@ -17,13 +17,19 @@
     "url": "https://github.com/ahdinosaur/inux/issues"
   },
   "homepage": "https://github.com/ahdinosaur/inux#readme",
+  "browserify": {
+    "transform": [
+      "es2040"
+    ]
+  },
   "devDependencies": {
     "tape": "^4.5.1"
   },
   "dependencies": {
+    "es2040": "^1.2.2",
     "get-in": "^2.0.0",
     "inu": "github:ahdinosaur/inu#defaults",
-    "inu-multi": "^1.0.2",
+    "inu-multi": "^1.0.4",
     "own-enumerable-keys": "^1.0.0",
     "pull-many": "^1.0.6",
     "pull-pushable": "^2.0.1",
