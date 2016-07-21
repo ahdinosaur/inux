@@ -28,7 +28,7 @@
   "dependencies": {
     "es2040": "^1.2.2",
     "get-in": "^2.0.0",
-    "inu": "github:ahdinosaur/inu#defaults",
+    "inu": "^3.1.1",
     "inu-multi": "^1.0.4",
     "own-enumerable-keys": "^1.0.0",
     "pull-many": "^1.0.6",
