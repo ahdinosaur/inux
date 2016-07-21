@@ -1,9 +1,111 @@
 # inux
 
-experimental helpers for `inu`
+an experiment in opinionated helpers for [`inu`](https://github.com/ahdinosaur/inu)
 
 ```shell
 npm install --save inux
+```
+
+![robot doge](https://pbs.twimg.com/profile_images/449012646851780608/yyIufvO-.png)
+
+## demos
+
+- [holodex/app#compost](https://github.com/holodex/app/tree/compost): full-stack user directory app using [`inu`](https://github.com/ahdinosaur/inu), [`inux`](https://github.com/ahdinosaur/inux), and [`vas`](https://github.com/ahdinosaur/vas)
+
+## philosophy
+
+`inu` provides the foundation, `inux` lets us fly. :)
+
+## concepts
+
+`inux` introduces some opinionated concepts to `inu`:
+
+### action or effect type
+
+a unique `String` or `Symbol` that corresponds to a type of action or effect payload
+
+```js
+const SET = 'SET_THINGS'
+// or
+const SET = Symbol('set')
+```
+
+### action or effect creator
+
+a function that returns an action or effect object of the form `{ type, payload }`
+
+```js
+function set (value) {
+  return {
+    type: SET,
+    payload: value
+  }
+}
+```
+
+### domain
+
+like an `inu` app, but
+
+- optionally namespaced to `name` property
+- `update` or `run` can be objects mapping types of actions or effects, respectively, to handler functions
+- `routes` can be an array of arrays describing routes for [`sheet-router`](https://github.com/yoshuawuyts/sheet-router)
+
+```js
+{
+  name: 'notepad',
+  init: {
+    model: '',
+    effect: 
+  }
+  update: {
+    [SET]: (model, text) {
+      return text
+    }
+  },
+  routes: [
+    ['/notepad', function (params, model, dispatch) {
+      return html`
+        <div>
+          ${textEditor(model.notepad, save)}
+        </div>
+      `
+
+      function save (value) {
+        dispatch(set(value))
+      }
+    }]
+  ]
+}
+```
+
+## enhancer
+
+a function that take an `inu` app and return another `inu` app
+
+```js
+function slower (app) {
+  return extend(app, {
+    run: (effect, sources) {
+      const nextActions = app.run(effect, sources)
+      if (nextActions) {
+        return pull(nextActions, pullDelay(1000))
+      }
+    }
+  })
+}
+```
+
+## app
+
+a list of domains to become a single `inu` app
+
+each domain is a group of functionality corresponding to a small specific theme in your overall app.
+
+```js
+[
+  notepad
+]
 ```
 
 ## example
@@ -64,22 +166,23 @@ const app = App([
 
 ### `inux = require('inux')`
 
-### `inux.Domain(Object app)`
+### `inux.Domain(Object domain)`
 
-extends `app.update` and `app.run` with `handleActions` and `handleEffects`, respectively.
+extends `domain.update` and `domain.run` with `handleActions` and `handleEffects`, respectively.
 
-### `inux.App(Array apps)`
+### `inux.App(Array domains)`
 
-combines an `Array` of `inux` apps into a single `inu` app.
+combines an `Array` of `inux` domains into a single `inu` app.
 
-each app's model is namespaced to `app.name`, 
-any app's effect is added to an `Array` of effects.
+each domains's model is namespaced to `domain.name`, 
+any domains's effect is added to an `Array` of effects.
 
 also
 
-- adds `inux.apps.href` to handle `href` changes
-- adds `inux.apps.run` to handle `run` actions
-- sets view using `route`
+- adds `inux.apps.href` domain to handle `href` changes
+- adds `inux.apps.run` domain to handle `run` actions
+- sets `app.view` using `route(combinedRoutes, app)
+- enhances resulting app with [`inu-multi`](https://github.com/ahdinosaur/inu-multi)
 
 ### `inux.Action(String|Symbol type, Function payloadCreator)`
 ### `inux.Effect(String|Symbol type, Function payloadCreator)`
