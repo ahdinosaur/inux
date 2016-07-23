@@ -1,16 +1,20 @@
-const Domain = require('./domain')
-const Action = require('./action')
-const Effect = require('./effect')
-
+const pull = require('pull-stream')
 const href = require('sheet-router/href')
 const history = require('sheet-router/history')
 const Pushable = require('pull-pushable')
 
+const Domain = require('./domain')
+const Action = require('./action')
+const Effect = require('./effect')
+
+
 const SET = Symbol('set')
 const INIT = Symbol('init')
+const GO = Symbol('go')
 
 const set = Action(SET)
 const init = Effect(INIT)
+const go = Effect(GO)
 
 module.exports = Domain({
 
@@ -44,6 +48,15 @@ module.exports = Domain({
           payload: href
         })
       }
+    },
+    [GO]: (href) => {
+      console.log('href', href)
+      href = href.replace(/#.*/, '')
+      if (window.location.href !== href) {
+        window.history.pushState({}, null, href)
+        return pull.values([set(href)])
+      }
     }
   }
 })
+module.exports.go = go
