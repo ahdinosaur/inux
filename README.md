@@ -25,9 +25,9 @@ npm install --save inux
 a unique `String` or `Symbol` that corresponds to a type of action or effect payload
 
 ```js
-const SET = 'SET_THINGS'
+const SET_TEXT = 'NOTEPAD_SET_TEXT'
 // or
-const SET = Symbol('set')
+const SET_TEXT = Symbol('setText')
 ```
 
 ### action or effect creator
@@ -35,10 +35,10 @@ const SET = Symbol('set')
 a function that returns an action or effect object of the form `{ type, payload }`
 
 ```js
-function set (value) {
+function setText (text) {
   return {
-    type: SET,
-    payload: value
+    type: SET_TEXT,
+    payload: text
   }
 }
 ```
@@ -47,9 +47,11 @@ function set (value) {
 
 like an `inu` app, but
 
-- optionally namespaced to `name` property
+- optionally namespaced to `name` property, which determines where the domain model will be merged into the overall app model
 - `update` or `run` can be objects mapping types of actions or effects, respectively, to handler functions
 - `routes` can be an array of arrays describing routes for [`sheet-router`](https://github.com/yoshuawuyts/sheet-router)
+
+in this example, `textEditor` refers to a hypothetical re-usable view component.
 
 ```js
 {
@@ -59,7 +61,7 @@ like an `inu` app, but
     effect: 
   }
   update: {
-    [SET]: (model, text) {
+    [SET_TEXT]: (model, text) {
       return text
     }
   },
@@ -71,8 +73,8 @@ like an `inu` app, but
         </div>
       `
 
-      function save (value) {
-        dispatch(set(value))
+      function save (text) {
+        dispatch(setText(text))
       }
     }]
   ]
@@ -84,17 +86,28 @@ like an `inu` app, but
 a function that take an `inu` app and return another `inu` app
 
 ```js
-function slower (app) {
+function log (app) {
   return extend(app, {
-    run: (effect, sources) {
-      const nextActions = app.run(effect, sources)
-      if (nextActions) {
-        return pull(nextActions, pullDelay(1000))
-      }
+    init: () => {
+      const state = app.init()
+      console.log('init:', state)
+      return state
+    },
+    update: (model, action) => {
+      console.log('update before:', model, action)
+      const state = app.update(model, action)
+      console.log('update after:', state)
+      return state
+    },
+    run: (effect, sources) => {
+      console.log('run', effect)
+      return app.run(effect, sources)
     }
   })
 }
 ```
+
+(for a better `inu` log enhancer, see [`inu-log`](https://github.com/ahdinosaur/inu-log))
 
 ## app
 
@@ -104,7 +117,9 @@ each domain is a group of functionality corresponding to a small specific theme 
 
 ```js
 [
-  notepad
+  notepad,
+  settings,
+  auth
 ]
 ```
 
