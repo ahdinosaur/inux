@@ -22,7 +22,7 @@ module.exports = Domain({
 
   init: () => ({
     model: document.location.href,
-    effect: INIT
+    effect: init()
   }),
 
   update: {
