@@ -5,6 +5,7 @@ module.exports = {
   Action: require('./action'),
   Effect: require('./effect'),
   run: require('./run').run,
+  navigate: require('./navigate'),
 
   // ---
   apps: {
