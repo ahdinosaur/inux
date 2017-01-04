@@ -1,0 +1,126 @@
+as a follow-up to https://github.com/ahdinosaur/vas/pull/20, here's more on a possible approach to the next `inu` using [`depject`](https://github.com/dominictarr/depject).
+
+example usage:
+
+```js
+const { Store, Page, combine, pull, html } = require('inux')
+
+const data = {
+  gives: 'data',
+  create: () => () => ({
+    1: 'human',
+    2: 'computer',
+    3: 'JavaScript'
+  })
+}
+
+const Id = {
+  gives: 'Id',
+  create: () => () => {
+    return Math.random().toString(36).substring(2)
+  }
+}
+
+const things = Store({
+  name: 'things',
+  needs: {
+    data: 'first',
+    Id: 'first',
+    things: {
+      actions: { create: 'first' },
+      effects: { fetch: 'first' }
+    }
+  }
+  state: (api) => ({ model: api.data }),
+  actions: (api) => ({
+    create: (model, thing) => ({
+      const id = api.Id()
+      return { model: { ...model, [id]: thing } }
+    }),
+    // or
+    // set: {
+    //   type: Symbol('set'),
+    //   create: payload => payload,
+    //   scope: ['things'],
+    //   update: (state, thing) => ({})
+    // },
+    doFetch: (model) => ({
+      model,
+      effect: api.things.effects.fetch()
+    })
+  },
+  effects: (api) => ({
+    fetch: (payload, source) => ({
+      return pull.values([
+        api.things.actions.create('rainbow')
+      ])
+    }),
+    // or
+    // fetch: {
+    //   type: Symbol('fetch'),
+    //   create: payload => payload,
+    //   run: (payload, sources) => {}
+    // }
+  })
+})
+
+const showPage = Page({
+  route: (api) => '/things/:id',
+  view: (api) => (model, dispatch) => {
+    return html`<div></div>`
+  }
+})
+
+const { views } = combine({ things, showThing, Id, data })
+const main = document.querySelector('.main')
+pull(views(), pull.drain(view => html.update(main, view)))
+```
+
+**questions**:
+- `reselect` getters?
+- server-side rendering?
+- should options / boilerplate like main dom element and store enhancers be modules you can inject into?
+- should `Store` and `Page` be functions called within plain depject's `create`?
+
+**how does it work?**
+
+`Store` converts a `inux` store like above into a `depject` module like:
+
+```js
+{
+  needs: {
+    data: 'first',
+    Id: 'first',
+    things: {
+      actions: { create: 'first' },
+      effects: { fetch: 'first' }
+    }
+  },
+  gives: {
+    things: {
+      actions: {
+        create: true,
+        doFetch: true
+      },
+      effects: {
+        fetch: true
+      }
+    }
+    inux: {
+      init: true,
+      update: true,
+      run: true
+    }
+  },
+  create: Function,
+}
+```
+
+where `init`, `update`, `run` are used with depject's `map`. to combine into a single `inu` app.
+
+and similarly for `Page` giving `route` module which points to a corresponding view.
+
+**benefits**:
+- `depject` is a consistent way of doing modular apps!
+
+thoughts?
