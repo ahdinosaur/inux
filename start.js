@@ -1,12 +1,12 @@
 const apply = require('depject/apply')
 
-const reduceUpdates = require('./lib/reduceUpdates')
+const reduce = require('./lib/reduce')
 
 module.exports = start
 
 function start (sockets) {
-  const update = reduceUpdates(sockets.inux.update)
-  const init = combineInit(sockets.inux.init)
+  const update = reduce(sockets.inux.update)
+  const init = reduce(sockets.inux.init)
 
   const app = {
     update,

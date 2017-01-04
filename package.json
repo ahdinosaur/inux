@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@f/array-equal": "^1.2.1",
+    "@f/set-prop": "^1.0.0",
     "depject": "github:ahdinosaur/depject#dep-order",
     "es2040": "^1.2.2",
     "inu": "^3.1.1",

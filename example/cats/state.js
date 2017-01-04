@@ -1,4 +1,7 @@
 module.exports = {
   scope: ['cats'],
-  create: () => () => ({})
+  create: () => ({
+    model: {},
+    effect: null
+  })
 }
