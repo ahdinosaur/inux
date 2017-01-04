@@ -6,7 +6,6 @@ const Action = require('./lib/action')
 module.exports = ActionModule
 
 function ActionModule (definition) {
-  console.log(definition)
   const {
     path,
     needs = {},
