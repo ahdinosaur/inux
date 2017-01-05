@@ -26,16 +26,13 @@
     "tape": "^4.5.1"
   },
   "dependencies": {
-    "@f/array-equal": "^1.2.1",
     "@f/set-prop": "^1.0.0",
     "depject": "github:ahdinosaur/depject#dep-order",
     "es2040": "^1.2.2",
-    "inu": "^3.1.1",
-    "inu-multi": "^1.0.4",
+    "inu": "^3.1.4",
     "libnested": "^1.1.0",
     "object-assign": "^4.1.0",
-    "pull-many": "^1.0.6",
-    "pull-pushable": "^2.0.1",
-    "pull-stream": "^3.4.3"
+    "pull-many": "^1.0.8",
+    "pull-stream": "^3.5.0"
   }
 }
