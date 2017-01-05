@@ -1,7 +1,9 @@
 module.exports = {
-  scope: ['cats'],
   create: () => ({
-    model: {},
-    effect: null
+    scope: ['cats'],
+    state: {
+      model: {},
+      effect: null
+    }
   })
 }
