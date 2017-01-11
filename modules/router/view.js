@@ -6,9 +6,7 @@ module.exports = {
   gives: { inux: { enhancer: true } },
   create: (api) => {
     const routes = api.inux.route()
-    const router = Router({
-      default: '/'
-    }, routes)
+    const router = Router(routes)
 
     return { inux: { enhancer: inuRouter } }
 
