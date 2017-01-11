@@ -4,7 +4,8 @@
   "description": "experimental flavor of inu helpers based on redux",
   "main": "index.js",
   "scripts": {
-    "test": "tape test.js"
+    "test": "tape test.js",
+    "example": "electro example"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     ]
   },
   "devDependencies": {
+    "electron": "^1.4.14",
     "tape": "^4.5.1"
   },
   "dependencies": {
@@ -30,9 +32,12 @@
     "depject": "github:ahdinosaur/depject#dep-order",
     "es2040": "^1.2.2",
     "inu": "^3.1.4",
+    "inu-multi": "^1.0.4",
     "libnested": "^1.1.0",
     "object-assign": "^4.1.0",
     "pull-many": "^1.0.8",
-    "pull-stream": "^3.5.0"
+    "pull-pushable": "^2.0.1",
+    "pull-stream": "^3.5.0",
+    "sheet-router": "^4.1.4"
   }
 }

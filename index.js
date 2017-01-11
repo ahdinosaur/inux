@@ -2,5 +2,7 @@ module.exports = {
   Action: require('./action'),
   Effect: require('./effect'),
   State: require('./state'),
-  start: require('./start')
+  Page: require('./page'),
+  start: require('./start'),
+  modules: require('./modules')
 }

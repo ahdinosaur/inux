@@ -1,3 +1,4 @@
+const apply = require('depject/apply')
 const inu = require('inu')
 
 const reduce = require('./lib/reduce')
@@ -6,8 +7,8 @@ const many = require('./lib/many')
 module.exports = start
 
 function start (sockets) {
-  const update = reduce(sockets.inux.update)
   const init = reduce(sockets.inux.init)
+  const update = reduce(sockets.inux.update)
   const run = many(sockets.inux.run)
 
   const app = {
@@ -16,9 +17,13 @@ function start (sockets) {
     run
   }
 
-  console.log('app', app)
+  const enhancer = apply.reduce(sockets.inux.enhancer)
+  
+  console.log(sockets.inux.enhancer)
 
-  return app
+  const enhancedApp = enhancer(app)
 
-  return inu.start(app)
+  console.log('enhancedApp', enhancedApp)
+
+  return inu.start(enhancedApp)
 }
